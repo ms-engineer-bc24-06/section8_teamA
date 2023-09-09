@@ -1,0 +1,36 @@
+@charset "UTF-8";
+
+html {
+    font-size: 100%;
+}
+
+body {
+    font-family: "Yu Gothic Medium", "游ゴシック Medium", "YuGothic", "游ゴシック体", "ヒラギノ角ゴ Pro W3", "sans-serif";
+    line-height: 1.7;
+    color: #ffdc00;
+    font-size: 80px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background-image: url("img/sky.jpg");
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    max-width: 100%;
+}
+
+#today {
+    font-size:60px;
+    color:#f5fafe;
+    margin-top: 60px;
+}
+
+button {
+    font-size: 80px;
+    color: #f5fafe;
+    background-color: #008554;
+}
