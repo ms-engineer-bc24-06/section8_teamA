@@ -18,7 +18,7 @@ for file in "$DOWNLOADS_DIR"/*; do
             mkdir -p "$DOWNLOADS_DIR/$file_extension/$file_date"
         fi
     
-        # ファイルを日付のフォルダに移動
+        # ファイルを日付のフォルダに移動(同一ファイルがあれば上書きするかどうか確認)
         mv -i "$file" "$DOWNLOADS_DIR/$file_extension/$file_date/"
         echo "Moved $file to $DOWNLOADS_DIR/$file_extension/$file_date/"
 
