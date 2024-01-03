@@ -5,6 +5,7 @@ DOWNLOADS_DIR="/Users/tsukudasayoko/downloads"
 
 # ダウンロードフォルダ内のファイルをループ処理
 for file in "$DOWNLOADS_DIR"/*; do
+
     if [[ -f "$file" ]]; then
         # ファイルの作成日を取得（%Y-%m-%d形式の日付）
         file_date=$(date -r "$file" +%Y-%m-%d)
@@ -25,4 +26,5 @@ for file in "$DOWNLOADS_DIR"/*; do
     else 
         echo "移動が必要なファイルはありません。"
     fi
+
 done
