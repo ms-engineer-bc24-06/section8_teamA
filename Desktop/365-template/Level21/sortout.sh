@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # ダウンロードフォルダのパス
 DOWNLOADS_DIR="/Users/tsukudasayoko/downloads"
 
