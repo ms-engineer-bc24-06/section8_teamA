@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # ダウンロードフォルダのパス
 DOWNLOADS_DIR="/Users/tsukudasayoko/downloads"
 
@@ -21,8 +20,13 @@ for file in "$DOWNLOADS_DIR"/*; do
         fi
     
         # ファイルを日付のフォルダに移動 (同一ファイルがあれば上書きするかどうか確認)
-        mv -i "$file" "$DOWNLOADS_DIR/$file_extension/$file_date/"
-        echo "Moved $file to $DOWNLOADS_DIR/$file_extension/$file_date/"
+        read -p "同名ファイルが存在します。上書きしますか？（yes/no): " overwrite_decision
+        if [ "$overwrite_decision" == "yes" ]; then
+            mv "$file" "$DOWNLOADS_DIR/$file_extension/$file_date/"
+            echo "Moved $file to $DOWNLOADS_DIR/$file_extension/$file_date/"
+        else
+            echo "上書きを中止しました。"
+        fi
 
     else 
         echo "移動が必要なファイルはありません。"
