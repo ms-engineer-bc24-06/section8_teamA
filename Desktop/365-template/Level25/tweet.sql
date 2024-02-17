@@ -72,6 +72,7 @@ CREATE TABLE DMs (
 ALTER TABLE Favorites MODIFY COLUMN tweet_id INT;
 ALTER TABLE Favorites MODIFY COLUMN comment_id INT;
 
+
 -- データの追加
     /* Usersテーブルに情報を追加 */
     INSERT INTO Users VALUES (1,'Hitomi','Hitomi@mse.com','password1'),(2,'Sayoko','Sayoko@mse.com','password2'),(3,'Takumi','Takumi@mse.com','password3');
@@ -85,8 +86,10 @@ ALTER TABLE Favorites MODIFY COLUMN comment_id INT;
     /* Favoritesテーブルに情報を追加 */ 
     INSERT INTO Favorites VALUES (1,2,1,2),(2,2,1,NULL),(3,2,1,NULL),(4,3,2,NULL),(5,1,3,NULL),(6,1,3,NULL),(7,6,2,1),(8,5,3,1),(9,4,2,2),(10,4,2,NULL);
 
+
 -- ユーザーごとのフォロー数を集計する
     -- LEFT JOIN を使用して Users テーブルと Relations テーブルを結合し、ユーザーごとのフォロー数を COUNT 関数を使って集計(以下同様にフォロワー数、いいね数を集計)
+    -- LEFT JOIN(左外部結合) を使うと左のテーブル(Users)は全て表示される
 SELECT u.id, u.name, COUNT(r.followed_id) AS follow_count
 FROM Users u
 LEFT JOIN Relations r ON u.id = r.followed_id
