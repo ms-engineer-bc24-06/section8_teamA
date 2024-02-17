@@ -93,9 +93,3 @@ CREATE TABLE Reservations (
 -- データの更新 => UPDATE [テーブル名] SET [フィールド名]=[値] WHERE [条件式]
    /* プレミア会員の割引率を更新 */
    UPDATE Memberships SET discount_rate = 0.4 WHERE id = 3;
-
-
-
-
-
-
