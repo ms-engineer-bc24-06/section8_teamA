@@ -48,7 +48,7 @@ CREATE TABLE Reservations (
     checkin DATE NOT NULL,
     checkout DATE NOT NULL,
     payment_id INT,
-    hotel_id INT,
+    room_type_id INT,
     cancellation BOOLEAN,
     option_charge INT,
     FOREIGN KEY (user_id) REFERENCES Users(id),
@@ -122,7 +122,8 @@ CREATE TABLE Reservations (
         u.id As user_id,
         r.checkin As checkin_date,
         r.checkout As checkout_date,
-        r.hotel_id,
+        r.room_type_id,
+        h.name As hotel_name,
         -- 部屋料金を計算（RoomTypeテーブルprice * 宿泊日数）
         rt.room_type,
         rt.available,
@@ -140,7 +141,9 @@ CREATE TABLE Reservations (
         INNER JOIN 
             Memberships m ON u.membership_id = m.id
         INNER JOIN 
-            RoomTypes rt ON r.hotel_id = rt.hotel_id
+            RoomTypes rt ON r.room_type_id = rt.id
+        INNER JOIN
+            Hotels h ON rt.hotel_id = h.id
         INNER JOIN
             Payments p ON r.payment_id = p.id
         WHERE
