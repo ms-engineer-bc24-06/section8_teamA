@@ -59,3 +59,9 @@ services:
 
     SQLでテーブルの作成、データの追加等の操作を行う（下記サイト参考）
     [よく使うMySQLコマンド&構文集 - Qiita](https://qiita.com/CyberMergina/items/f889519e6be19c46f5f4)
+
+
+## 課題２
+
+- ER図：<https://drive.google.com/file/d/1iuIFUMl_m-Z9NNJyZsh6XiDnlhZ0LJIk/view?usp=sharing>
+- SQL：level25_2.sql内に記述
