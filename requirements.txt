@@ -8,3 +8,5 @@ Flask-Migrate
 Flask-SQLAlchemy
 requests
 langchain
+langchain-openai
+pymysql
