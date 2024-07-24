@@ -1,0 +1,12 @@
+
+flask
+line-bot-sdk
+openai
+mysql-connector-python
+python-dotenv
+Flask-Migrate
+Flask-SQLAlchemy
+requests
+langchain
+langchain-openai
+pymysql
