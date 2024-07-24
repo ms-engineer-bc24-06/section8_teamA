@@ -35,4 +35,3 @@ def close_connection(connection):
             logger.info("Database connection closed.")
         except Error as e:
             logger.error(f"Error closing connection: {e}")
-
