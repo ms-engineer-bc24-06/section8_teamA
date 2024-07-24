@@ -1,0 +1,84 @@
+openapi: "3.0.3"
+
+info:
+  title: "Giftie API" # 必須。APIのタイトル
+  version: "1.0.0" # 必須。APIのドキュメントのバージョン情報
+  description: "このAPIはGiftieの操作とデータを提供します。" # APIの短い説明
+  termsOfService: "http://giftie.com/terms/" # APIの利用規約へのURL
+  contact: # APIの連絡先情報
+    name: "Giftie APIサポート チーム" # 連絡先の名前
+    url: "http://www.giftie.com/support" # 連絡先のURL
+    email: "support@giftie.com" # 連絡先のEメールアドレス
+  license: # APIのライセンス情報
+    name: "Apache 2.0" # ライセンスの名前
+    url: "https://www.apache.org/licenses/LICENSE-2.0.html" # ライセンスURL
+
+servers:
+  - url: "https://api.giftie.com/v1" # APIをホストしているサーバーのURL
+    description: "本番環境サーバー" # このサーバーに関する追加情報
+  - url: "https://staging-api.giftie.com" # 別のサーバーのURL、例えばステージング環境
+    description: "ステージング環境サーバー" # このステージングサーバーに関する追加情報
+  - url: "http://localhost:5000" # ローカル開発用のサーバーURL
+    description: "開発環境サーバー" # この開発サーバーに関する追加情報
+
+paths:
+  /callback: 
+    post:
+      summary: "LINEからのメッセージを受け取り、応答を送信する"
+      description: "LINEからのメッセージを受け取り、ChatGPT APIと楽天市場APIを使用して処理し、LINEに応答を返すために使用"
+      tags: ["message"] 
+      deprecated: false
+      responses: # レスポンスを定義
+        "200": # HTTPステータスコード 200の場合の処理をこのセクションで定義
+          description: "Success! 応答が送信されました" # この応答の説明
+          content: # レスポンスデータを定義
+            application/json: # レスポンスのコンテントタイプ JSON形式
+              schema: # レスポンスのスキーマを定義するセクション
+                type: array # レスポンスの型: 配列
+                example: # スキーマの例を定義できるセクション
+                  - id: "1"
+                    message: "messsage-1"
+                  - id: "2"
+                    message: "message-2"
+                items: # 配列内のアイテムを定義するセクション
+                  type: object # アイテムの型: オブジェクト
+                  properties: # オブジェクトのプロパティを定義するセクション
+                    id: { type: string, description: "messegeのID" } # 型と説明
+                    message: { type: string, description: "message文" } # 型と説明
+        "400": # HTTPステータスコード 400の場合の処理をこのセクションで定義
+          description: "invalid request: パラメータが無効です" # この応答の説明
+        "500":
+          description: "server error: サーバー上でエラーが発生しました"
+
+components:
+  schemas:
+    Message:
+      type: 'object'
+      properties:
+        events:
+          type: 'array'
+          items:
+            $ref: '#/components/schemas/Event'
+    Event:
+      type: 'object'
+      properties:
+        type:
+          type: 'string'
+          description: 'イベントのタイプ'
+        message:
+          $ref: '#/components/schemas/LineMessage'
+        replyToken:
+          type: 'string'
+          description: 'このイベントに返信するためのトークン'
+    LineMessage:
+      type: 'object'
+      properties:
+        id:
+          type: 'string'
+          description: 'メッセージID'
+        type:
+          type: 'string'
+          description: 'メッセージのタイプ'
+        text:
+          type: 'string'
+          description: 'メッセージのテキスト'
