@@ -35,3 +35,6 @@ def close_connection(connection):
             logger.info("Database connection closed.")
         except Error as e:
             logger.error(f"Error closing connection: {e}")
+def get_conversation_history(user_id):
+    # ここではダミーデータとして空の文字列を返す
+    return ""

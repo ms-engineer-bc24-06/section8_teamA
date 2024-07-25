@@ -1,75 +1,21 @@
+
 import os
-from flask import Flask
-# from flask_sqlalchemy import SQLAlchemy
-# from flask_migrate import Migrate
-from linebot.v3.messaging import MessagingApi
-from linebot.v3.webhook import WebhookHandler
-from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
-from dotenv import load_dotenv
+import sys
 from datetime import datetime
+
+sys.path.append('/app/app')
 
 from services.chatgpt_service import process_message, get_conversation_history, extract_keywords
 from services.rakuten_service import search_products
 
-# 環境変数をロード
-# 環境変数の読み込み
-load_dotenv()
-
-# Flaskアプリケーションの設定
-app = Flask(__name__)
-
-# LINEチャネルアクセストークンとシークレットを環境変数から取得
-LINE_CHANNEL_ACCESS_TOKEN = os.getenv('LINE_CHANNEL_ACCESS_TOKEN')
-LINE_CHANNEL_SECRET = os.getenv('LINE_CHANNEL_SECRET')
-
-if not LINE_CHANNEL_ACCESS_TOKEN or not LINE_CHANNEL_SECRET:
-    raise ValueError("Error: LINE_CHANNEL_ACCESS_TOKEN and LINE_CHANNEL_SECRET must be set")
-
-line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
-handler = WebhookHandler(LINE_CHANNEL_SECRET)
+# 環境変数の設定
+os.environ['OPENAI_API_KEY'] = 'your_actual_openai_api_key'
+os.environ['RAKUTEN_APP_ID'] = 'your_rakuten_app_id'
 
 # ユーザーの状態を管理する辞書
 user_states = {}
 
-@app.route("/callback", methods=['POST'])
-from routes import *
-
-# ロギングの設定
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-@app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
-
-@app.route("/callback", methods=["POST"])
-def callback():
-    # X-Line-Signatureヘッダーの値を取得
-    signature = request.headers['X-Line-Signature']
-
-    # リクエストボディをテキストとして取得
-    print("callback関数呼び出し")
-    signature = request.headers.get("X-Line-Signature")
-    body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
-
-    # Webhookボディを処理
-    try:
-        handler.handle(body, signature)
-    except InvalidSignatureError:
-        logger.error("Invalid signature error.")
-        abort(400)
-
-    return 'OK'
-    return "OK"
-
-@handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
-    user_message = event.message.text
-    user_id = event.source.user_id
-
-    # ユーザーの状態を管理
+def simulate_line_interaction(user_id, user_message):
     current_date = datetime.now()
     last_interaction_date = user_states.get(user_id, {}).get("last_interaction_date", current_date)
     days_since_last_interaction = (current_date - last_interaction_date).days
@@ -81,7 +27,7 @@ def handle_message(event):
 
     if days_since_last_interaction > 0:
         if step == 0:
-            reply_message = "久しぶり！お元気でしたか？私はギフティーです。まず、贈る相手について少し教えてください。贈る相手の性別を教えてください。（例: 男性、女性、どちらでも）"
+            reply_message = "久しぶり！お元気でしたか？私はギフティーです。あなたにぴったりのプレゼントを提案します。まず、贈る相手について少し教えてください。贈る相手の性別を教えてください。（例: 男性、女性、どちらでも）"
             user_states[user_id]["step"] = 1
         else:
             reply_message = "お久しぶりです！再びお手伝いできて嬉しいです。どのようなプレゼントをお探しですか？"
@@ -148,12 +94,25 @@ def handle_message(event):
                 user_states[user_id]["step"] = 0  # 初期ステップに戻す
 
     user_states[user_id]["last_interaction_date"] = current_date
+    return reply_message
 
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=reply_message)
-    )
+def test_line_integration():
+    user_id = "test_user"
+    # シミュレーションメッセージ
+    messages = [
+        "こんにちは",  # 初回メッセージ
+        "女性",       # 性別
+        "30歳",       # 年齢
+        "友人",       # 関係
+        "アクセサリー", # カテゴリー
+        "音楽",       # 趣味
+        "5000円"     # 予算
+    ]
+
+    for message in messages:
+        reply = simulate_line_interaction(user_id, message)
+        print(f"User: {message}")
+        print(f"Bot: {reply}")
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
-
+    test_line_integration()

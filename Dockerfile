@@ -16,5 +16,6 @@ COPY . .
 ENV FLASK_ENV=development
 
 # Flaskアプリケーションの起動
+CMD ["python", "app/app.py", "--host=0.0.0.0","--port=5000"]
 CMD ["python", "app/app.py", "--host=0.0.0.0" ,"--port=5000"]
 
