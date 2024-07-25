@@ -1,12 +1,10 @@
-from flask import Flask, request, abort
-from linebot import LineBotApi, WebhookHandler
+from flask import Flask
+# from flask_sqlalchemy import SQLAlchemy
+# from flask_migrate import Migrate
+from linebot.v3.messaging import MessagingApi
+from linebot.v3.webhook import WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-import openai
-import os
-from dotenv import load_dotenv
-import logging
-from database import create_connection, close_connection
 
 # 環境変数の読み込み
 load_dotenv()
@@ -20,6 +18,8 @@ handler = WebhookHandler(os.getenv("CHANNEL_SECRET"))
 
 # OpenAI API設定
 openai.api_key = os.getenv("OPENAI_API_KEY")
+
+from routes import *
 
 # ロギングの設定
 logging.basicConfig(level=logging.INFO)
@@ -43,5 +43,5 @@ def callback():
     return "OK"
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5000)
 
