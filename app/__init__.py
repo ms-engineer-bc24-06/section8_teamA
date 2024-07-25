@@ -21,8 +21,8 @@ def create_app():
     db.init_app(app)
 
     # ルートやブループリントの登録
-    from .routes import main_bp  # .routes はあなたのモジュールに合わせて変更
-    app.register_blueprint(main_bp)
+    # from .routes import main_bp  # .routes はあなたのモジュールに合わせて変更
+    # app.register_blueprint(main_bp)
 
     return app
 
