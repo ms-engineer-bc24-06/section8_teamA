@@ -15,7 +15,7 @@ def create_app():
     CORS(app)
 
     # 設定の読み込み
-    app.config.from_object('config.Config')  # 'config.Config' を適切な設定ファイルに変更
+    app.config.from_object('app.config.Config')  # 'config.Config' を適切な設定ファイルに変更
 
     # データベースの初期化
     db.init_app(app)

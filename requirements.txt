@@ -1,5 +1,6 @@
 
 flask
+flask-cors
 line-bot-sdk
 openai
 mysql-connector-python
@@ -9,3 +10,5 @@ Flask-SQLAlchemy
 requests
 langchain
 langchain-openai
+pymysql
+mysqlclient

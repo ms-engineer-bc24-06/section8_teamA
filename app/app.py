@@ -1,20 +1,39 @@
-
 import os
 from flask import Flask, request, abort
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from dotenv import load_dotenv
 from datetime import datetime
-
+import logging
 from services.chatgpt_service import process_message, get_conversation_history, extract_keywords
 from services.rakuten_service import search_products
 
 # 環境変数をロード
 load_dotenv()
 
+# Flaskアプリケーションの設定
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://username:password@hostname/dbname'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+# データベースモデルの設定
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(255), unique=True, nullable=False)
+    name = db.Column(db.String(255), nullable=True)
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(255), db.ForeignKey('user.user_id'), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    response = db.Column(db.Text, nullable=True)
+    timestamp = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
 # LINEチャネルアクセストークンとシークレットを環境変数から取得
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv('LINE_CHANNEL_ACCESS_TOKEN')
 LINE_CHANNEL_SECRET = os.getenv('LINE_CHANNEL_SECRET')
@@ -28,12 +47,18 @@ handler = WebhookHandler(LINE_CHANNEL_SECRET)
 # ユーザーの状態を管理する辞書
 user_states = {}
 
-@app.route("/callback", methods=['POST'])
+# ロギングの設定
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+@app.route("/callback", methods=["POST"])
 def callback():
     # X-Line-Signatureヘッダーの値を取得
     signature = request.headers['X-Line-Signature']
 
     # リクエストボディをテキストとして取得
+    print("callback関数呼び出し")
+    signature = request.headers.get("X-Line-Signature")
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
 
@@ -41,6 +66,7 @@ def callback():
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
+        logger.error("Invalid signature error.")
         abort(400)
 
     return 'OK'
@@ -136,5 +162,5 @@ def handle_message(event):
     )
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5000)
 
