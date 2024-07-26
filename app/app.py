@@ -123,8 +123,12 @@ def handle_message(event):
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_message))
         elif step == 6:
             user_states[user_id]["budget"] = int(user_message.replace("円", "").strip())  # 予算を整数に変換
+            age = user_states[user_id]["age"]
+            relationship = user_states[user_id]["relationship"]
+            category = user_states[user_id]["category"]
+            hobby = user_states[user_id]["hobby"]
             conversation_history = get_conversation_history(user_id)
-            gpt_response = process_message(user_id, user_message, conversation_history)
+            gpt_response = process_message(user_id, user_message, conversation_history, age, relationship, category, hobby)
             print(f"ChatGPT Response: {gpt_response}")
             gender = user_states[user_id].get("gender")
             keywords = extract_keywords(gpt_response, gender)
@@ -132,9 +136,9 @@ def handle_message(event):
             products = search_products(keywords, user_states[user_id]["budget"])  # 予算を渡す
             user_states[user_id]["suggestions"] = products
             if products:
-                reply_message = "あなたの情報に基づいて、以下のプレゼントを提案します！\n" + "\n".join(products) + "\nもっと詳しく知りたい商品番号を教えてください。または、再提案を希望する場合は「再提案」と入力してください。"
+                reply_message = f"ChatGPTの提案: {gpt_response}\n\nあなたの情報に基づいて、以下のプレゼントを提案します！\n" + "\n".join(products) + "\nもっと詳しく知りたい商品番号を教えてください。または、再提案を希望する場合は「再提案」と入力してください。"
             else:
-                reply_message = "該当する商品が見つかりませんでした。もう一度やり直してください。"
+                reply_message = f"ChatGPTの提案: {gpt_response}\n\n該当する商品が見つかりませんでした。もう一度やり直してください。"
             user_states[user_id]["step"] = 7
         elif step == 7:
             if user_message.lower() == "再提案":
